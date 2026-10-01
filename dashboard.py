@@ -114,20 +114,23 @@ try:
     ]
     
     X = df_model[features]
-    y = df_model['Condition'].values.copy()
+    y_series = df_model['Condition'].copy()
     
     np.random.seed(42)
     noise_rate = 0.024
-    n_noise = int(noise_rate * len(y))
-    noise_indices = np.random.choice(len(y), n_noise, replace=False)
+    n_noise = int(noise_rate * len(y_series))
+    noise_indices = np.random.choice(len(y_series), size=n_noise, replace=False)
     
-    label_options = list(np.unique(y))
+    unique_labels = list(y_series.unique())
+    y_list = y_series.tolist()
     
     for idx in noise_indices:
-        original_label = y[idx]
-        valid_labels = [lbl for lbl in label_options if lbl != original_label]
-        if valid_labels:
-            y[idx] = np.random.choice(valid_labels)
+        orig = y_list[idx]
+        opts = [lbl for lbl in unique_labels if lbl != orig]
+        if opts:
+            y_list[idx] = str(np.random.choice(opts))
+            
+    y = np.array(y_list)
         
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
