@@ -46,12 +46,16 @@ try:
     
     st.markdown("---")
     
-    # Section 1
     st.subheader("1. Multidimensional Integrity and Material Risk Analysis")
     col_left, col_right = st.columns([3, 2])
     
     with col_left:
-        status_colors = {'Critical': '#FF2E63', 'Moderate': '#FFD369', 'Good': '#08D9D6'}
+        status_colors = {
+            'Critical': '#FF2E63', 
+            'Moderate': '#FFD369', 
+            'Normal': '#08D9D6', 
+            'Good': '#08D9D6'
+        }
         fig_3d = px.scatter_3d(
             df,
             x='Temperature_C',
@@ -94,7 +98,6 @@ try:
         
     st.markdown("---")
     
-    # Section 2
     st.subheader("2. Machine Learning Diagnostics and Feature Sensitivity")
     df_model = df_raw.copy()
     
@@ -117,12 +120,14 @@ try:
     noise_rate = 0.024
     n_noise = int(noise_rate * len(y))
     noise_indices = np.random.choice(len(y), n_noise, replace=False)
-    label_options = ['Critical', 'Moderate', 'Good']
+    
+    label_options = list(np.unique(y))
     
     for idx in noise_indices:
         original_label = y[idx]
         valid_labels = [lbl for lbl in label_options if lbl != original_label]
-        y[idx] = np.random.choice(valid_labels)
+        if valid_labels:
+            y[idx] = np.random.choice(valid_labels)
         
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
